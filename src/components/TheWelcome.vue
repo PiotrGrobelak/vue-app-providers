@@ -5,9 +5,14 @@ import ToolingIcon from "./icons/IconTooling.vue";
 import EcosystemIcon from "./icons/IconEcosystem.vue";
 import CommunityIcon from "./icons/IconCommunity.vue";
 import SupportIcon from "./icons/IconSupport.vue";
+
+const handleSetError = (): void => {
+  throw Error("Set error");
+};
 </script>
 
 <template>
+  <button type="button" @click="handleSetError">Set error</button>
   <WelcomeItem>
     <template #icon>
       <DocumentationIcon />
