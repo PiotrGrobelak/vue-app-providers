@@ -2,12 +2,14 @@
   <div class="about">
     <ErrorProvider layout="ERROR_PAGE">
       <h1>This is an about page</h1>
+      <TheWelcome />
     </ErrorProvider>
   </div>
 </template>
 
 <script setup lang="ts">
 import ErrorProvider from "@/services/ErrorProvider/ErrorProvider.vue";
+import TheWelcome from "@/components/TheWelcome.vue";
 </script>
 
 <style>
