@@ -3,7 +3,7 @@
     <slot v-if="!hasError"></slot>
     <component v-else :is="props.fallBack" />
   </template>
-  <slot v-else></slot>
+  <slot v-else name="boundary"></slot>
 </template>
 
 <script setup lang="ts">
