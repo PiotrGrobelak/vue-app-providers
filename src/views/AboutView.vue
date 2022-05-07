@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <ErrorProvider layout="ERROR_PAGE">
+    <ErrorProvider layout="ERROR_COMPONENT">
       <h1>This is an about page</h1>
       <TheWelcome />
     </ErrorProvider>
@@ -17,7 +17,9 @@ import TheWelcome from "@/components/TheWelcome.vue";
   .about {
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 }
 </style>

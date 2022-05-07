@@ -2,7 +2,14 @@
   <template v-if="!slots.boundary">
     <slot v-if="!state.hasError"></slot>
     <component v-else-if="props.layout === 'ERROR_PAGE'" :is="ErrorPage" />
-    <component v-else :is="props.fallBack" />
+    <component
+      v-else-if="props.layout === 'ERROR_COMPONENT'"
+      :is="ErrorComponent"
+    />
+    <component
+      v-else-if="props.layout === 'ERROR_CUSTOM_COMPONENT'"
+      :is="props.customLayout"
+    />
   </template>
   <slot v-else name="boundary"></slot>
 </template>
@@ -15,35 +22,40 @@ import {
   readonly,
   toRefs,
   useSlots,
-  watch,
 } from "vue";
-import type { ComponentPublicInstance, Component } from "vue";
-import { ErrorSetSymbol, ErrorClearSymbol, ErrorStateSymbol } from "./index";
-import ErrorFallback from "@/services/ErrorBoundary/ErrorFallback.vue";
+import type { Component } from "vue";
 import ErrorPage from "./ErrorPage.vue";
+import ErrorComponent from "./ErrorComponent.vue";
+import { ErrorSetSymbol, ErrorClearSymbol, ErrorStateSymbol } from "./index";
+import type {
+  ErrorLayout,
+  ErrorState,
+  ErrorCaptured,
+} from "./ErrorProvider.model";
+
+/**
+ * Docs onErrorCaptured
+ * https://vuejs.org/api/composition-api-lifecycle.html#onerrorcaptured
+ */
+
+/**
+ * Answer why interface is declared here
+ * [@vue/compiler-sfc] type argument passed to defineProps() must be a literal type, or a reference to an interface or literal type.
+ * Issue link => https://github.com/vuejs/core/issues/4294
+ * In the future the case should be fixed by Vue developers
+ */
 
 export interface ErrorProviderProps {
-  layout: string;
-  fallBack?: Component | null;
+  layout: ErrorLayout;
+  customLayout?: Component | null;
   stopPropagation?: boolean;
 }
 
 const props = withDefaults(defineProps<ErrorProviderProps>(), {
-  fallBack: null,
-  stopPropagation: true,
-  layout: "ERROR_PAGE",
+  layout: "ERROR_PAGE" as ErrorLayout,
+  customLayout: null,
+  stopPropagation: false,
 });
-
-export type ErrorType = {
-  error: Error;
-  instance: ComponentPublicInstance | null;
-  info: string;
-};
-
-export interface ErrorState {
-  hasError: boolean;
-  error: ErrorType | null;
-}
 
 const state: ErrorState = reactive({
   hasError: false,
@@ -52,7 +64,7 @@ const state: ErrorState = reactive({
 
 const slots = useSlots();
 
-const setError = (error: ErrorType): void => {
+const setError = (error: ErrorCaptured): void => {
   state.error = error;
 };
 
@@ -65,26 +77,20 @@ provide(ErrorSetSymbol, setError);
 provide(ErrorClearSymbol, clearError);
 
 if (!slots.default && !slots.boundary) {
-  console.warn("ErrorBoundary component must have child components.");
+  console.warn("ErrorProvider component must have child components.");
 }
 
-watch(
-  () => slots,
-  () => console.log(slots),
-  { deep: true }
-);
+if (props.layout === "ERROR_CUSTOM_COMPONENT" && !props.customLayout) {
+  console.warn(
+    "If ErrorProvider component have prop ErrorLayout as `ERROR_CUSTOM_COMPONENT` must have declared customLayout prop"
+  );
+}
 
-onErrorCaptured(
-  (
-    error: Error,
-    instance: ComponentPublicInstance | null,
-    errorInfo: string
-  ) => {
-    console.log("eneter");
-    state.hasError = true;
-    setError({ error: error, instance: instance, info: errorInfo });
+onErrorCaptured((cb: ErrorCaptured) => {
+  console.log("__CACHED__ERROR__", cb);
+  state.hasError = true;
+  setError(cb);
 
-    if (props.stopPropagation) return false;
-  }
-);
+  if (props.stopPropagation) return false;
+});
 </script>
