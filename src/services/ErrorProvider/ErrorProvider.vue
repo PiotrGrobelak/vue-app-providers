@@ -87,7 +87,7 @@ if (props.layout === "ERROR_CUSTOM_COMPONENT" && !props.customLayout) {
 }
 
 onErrorCaptured((cb: ErrorCaptured) => {
-  console.log("__CACHED__ERROR__", cb);
+  // console.log("__CACHED__ERROR__", cb);
   state.hasError = true;
   setError(cb);
 

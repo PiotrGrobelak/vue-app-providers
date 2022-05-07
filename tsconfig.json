@@ -7,6 +7,7 @@
       "@/*": ["./src/*"]
     },
     "types": ["vite/client", "@types/jest", "@types/node", "node"],
+    "module": "es2022"
   },
 
 

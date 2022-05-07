@@ -9,6 +9,8 @@ import SupportIcon from "./icons/IconSupport.vue";
 const handleSetError = (): void => {
   throw Error("Set error");
 };
+
+defineExpose({ handleSetError });
 </script>
 
 <template>
