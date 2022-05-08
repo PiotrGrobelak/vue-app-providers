@@ -2,14 +2,28 @@
   <div class="about">
     <ErrorProvider layout="ERROR_COMPONENT">
       <h1>This is an about page</h1>
-      <TheWelcome />
+      <TestComponent :data="faliMockedData" />
     </ErrorProvider>
   </div>
 </template>
 
 <script setup lang="ts">
 import ErrorProvider from "@/services/ErrorProvider/ErrorProvider.vue";
-import TheWelcome from "@/components/TheWelcome.vue";
+import TestComponent from "@/components/TestComponent.vue";
+
+const passMockedData = [
+  {
+    id: 34,
+    description: "Some string",
+  },
+];
+
+const faliMockedData = [
+  {
+    id: undefined,
+    description: "Some string",
+  },
+];
 </script>
 
 <style>

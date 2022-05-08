@@ -20,7 +20,7 @@ export interface ErrorBoundaryProps {
 const props = withDefaults(defineProps<ErrorBoundaryProps>(), {
   fallBack: ErrorFallback,
   params: () => ({}),
-  stopPropagation: false,
+  stopPropagation: true,
 });
 
 // const emits = defineEmits(["error-captured"]);

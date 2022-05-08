@@ -23,7 +23,7 @@ import {
   toRefs,
   useSlots,
 } from "vue";
-import type { Component } from "vue";
+import type { Component, ComponentPublicInstance } from "vue";
 import ErrorPage from "./ErrorPage.vue";
 import ErrorComponent from "./ErrorComponent.vue";
 import { ErrorSetSymbol, ErrorClearSymbol, ErrorStateSymbol } from "./index";
@@ -54,7 +54,7 @@ export interface ErrorProviderProps {
 const props = withDefaults(defineProps<ErrorProviderProps>(), {
   layout: "ERROR_PAGE" as ErrorLayout,
   customLayout: null,
-  stopPropagation: false,
+  stopPropagation: true,
 });
 
 const state: ErrorState = reactive({
@@ -72,7 +72,7 @@ const clearError = (): void => {
   state.error = null;
 };
 
-provide(ErrorStateSymbol, toRefs(readonly(state)));
+provide(ErrorStateSymbol, state);
 provide(ErrorSetSymbol, setError);
 provide(ErrorClearSymbol, clearError);
 
@@ -86,11 +86,15 @@ if (props.layout === "ERROR_CUSTOM_COMPONENT" && !props.customLayout) {
   );
 }
 
-onErrorCaptured((cb: ErrorCaptured) => {
-  // console.log("__CACHED__ERROR__", cb);
-  state.hasError = true;
-  setError(cb);
+onErrorCaptured(
+  (error: unknown, instance: ComponentPublicInstance | null, info: string) => {
+    // console.log("__CACHED__ERROR__", error);
+    state.hasError = true;
+    setError({ error, instance, info });
 
-  if (props.stopPropagation) return false;
-});
+    if (props.stopPropagation) return false;
+  }
+);
+
+defineExpose({ onErrorCaptured });
 </script>

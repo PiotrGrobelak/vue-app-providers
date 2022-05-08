@@ -7,7 +7,7 @@ export enum ErrorLayout {
 }
 
 export type ErrorCaptured = {
-  error: Error;
+  error: unknown;
   instance: ComponentPublicInstance | null;
   info: string;
 };

@@ -1,19 +1,21 @@
 <template>
   <main>
-    <ErrorBoundary> <TheWelcome /></ErrorBoundary>
+    <ErrorBoundary>
+      <TestComponent :shouldManualFail="false" :data="datas"
+    /></ErrorBoundary>
   </main>
 </template>
 
 <script setup lang="ts">
-import TheWelcome from "@/components/TheWelcome.vue";
 import ErrorBoundary from "@/services/ErrorBoundary";
-import type { ComponentPublicInstance } from "vue";
+import TestComponent from "@/components/TestComponent.vue";
 
-type ErrorType = {
-  error: Error;
-  instance: ComponentPublicInstance | null;
-  info: any;
-};
+const datas = [
+  {
+    someString: "dsadas",
+    someId: 43,
+  },
+];
 
 // const handleError = (err: ErrorType) => {
 //   console.log("Error obj", err);
